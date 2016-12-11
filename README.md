@@ -13,7 +13,9 @@ The demo makes use of a simple todo app created by and published by [Scotch.io](
 * [Running The App](#running-the-app)
 * [Integrated Debugging](#debugging)
 * [Full Stack Debugging](#full-stack-debugging)
-* [Docker](#docker)
+* [Dockerizing Your App](#dockererizing-your-app)
+* [Deploying Your App](#deploying-your-app)
+* [Using DocumentDB](#using-documentdb)
 * [Conclusion](#conclusion)
 
 ## Pre-requisites
@@ -22,9 +24,9 @@ In order to effectively run-through this demo, you need to have the following so
 
 1. Visual Studio Code Insiders Build, which you can download [here](https://code.visualstudio.com/insiders). You don't technically need the insiders build, however, I would encourage everyone to use it since it provides access to the latest bug fixes/feature enhancements (just like Chrome Canary builds), and is the same build that the VS Code team uses.
 
-2. Docker, which can be downloaded [here](https://www.docker.com/products/docker).
+2. Docker, which can be downloaded [here](https://www.docker.com/products/docker). Additionally, you will need to have a DockerHub account in order to publish the Docker images that will be created in the walkthrough.
 
-3. Azure CLI 2.0 preview, which provides installation instructions [here](https://github.com/Azure/azure-cli#installation).
+3. Azure CLI 2.0 preview, which provides installation instructions [here](https://github.com/Azure/azure-cli#installation). Additionally, you will need an Azure account, and be logged in with the Azure CLI by running `az login` and following the interactive login.
 
 4. Yarn, which provides installation instructions [here](https://yarnpkg.com/en/docs/install). This isn't technically required, however, it's used in place of the NPM client below.
 
@@ -273,6 +275,53 @@ Now that we have our `Dockerfile`, we need to build the actual Docker image. Onc
 Notice that the command simply automated the process of running `docker build` for you, which is another example of a productivity enhancer that you can either choose to use, or you can just use the Docker CLI directly. Whatever works best for you!
 
 At this point, to make this image easily acquireable for deployments, we just need to push it to DockerHub. To do this, bring up the command palette, enter `dockerpush` and select the `Docker: Push` command. Select the image tag that you just build (e.g. `lostintangent/node`) and hit `<ENTER>`. This will automate calling `docker push` and will display the output in the integrated terminal.
+
+## Deploying Your App
+
+Now that we have our app Dockerized and pushed to DockerHub, we need to actually deploy it to the cloud so we can show it off to the world. For this, we'll use Azure App Service, which is Azure's PaaS offering, and recently added two new capabilities which are relevant to Node.js developers:
+
+1. Support for Linux-based VMs, which reduces incompatibilities for apps which are built using native Node modules, or other tools which might not support Windows or behave differently.
+
+2. Support for Docker-based deployments, which allow you to simply specify the name of your Docker image, and allow App Service to pull, deploy and scale the image automatically.
+
+To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to manage your Azure account and provision the neccessary infrastructure to run the todo app. Once you've logged into your account from the CLI using the `az login` command, perform the following steps in order to provision the App Service instance and deploy the todo app container:
+
+1. Create the resource group, which you can think of as a "namespace" or "directory" for helping to organize Azure resources. The `-n` flag is the name of the group and can be specified as anything you want.
+
+    ```shell
+    az group create -n nina-demo -l westus
+    ```
+
+2. Create the App Service plan, which will manage creating and scaling the underlying VMs that your app is deployed to. Once again, specify any value that you'd like for the name flag, however, make sure that the `-g` flag references the name that you gave to the resource group.
+
+    ```shell
+    az appservice plan create -n nina-demo -g nina-demo --is-linux
+    ```
+
+3. Create the App Service web app, which represents the todo app that will be running within the plan and resource group we just created:
+
+    ```shell
+    az appservice web create -n nina-demo -p nina-demo -g nina-demo
+    ```
+
+4. Configure the web app to use our Docker image, making sure to set the `-c` flag to the name of your DockerHub account/image name:
+
+    ```shell
+    az appservice web config container update -n nina-demo -g nina-demo -c lostintangent/node
+    ```
+
+5. Launch the app to view the container that was just deployed, which will be available at an `*.azurewebsites.net` URL:
+
+    ```shell
+    az appservice web browse -n nina-demo -g nina-demo
+    ```
+
+    <img src="images/BrowseApp.png" width="300px" />
+
+    *Note: This may take a minute to first load your app, since App Service has to pull your Docker image from DockerHub and then start it up.*
+
+
+## Using DocumentDB
 
 ## Conclusion
 
