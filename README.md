@@ -16,6 +16,7 @@ The demo makes use of a simple todo app created by and published by [Scotch.io](
 * [Dockerizing Your App](#dockererizing-your-app)
 * [Deploying Your App](#deploying-your-app)
 * [Using DocumentDB](#using-documentdb)
+* [Clean-up](#clean-up)
 * [Conclusion](#conclusion)
 
 ## Pre-requisites
@@ -356,6 +357,16 @@ Hit the `Save` button, and then return to your browser and refresh it. Try addin
 When needed, we could switch back to the DocumentDB instance, and scale up (or down) the reserved throughput that our MongoDB instance needs, and benefit from the added traffic without needing to manage any infrastructure manually.
 
 <img src="images/DocDBScale.png" width="300px" />
+
+## Clean-up
+
+To ensure that you don't get charged for any Azure resources you aren't using, simply run the following command from your terminal to delete all of the resources we just provisioned:
+
+```shell
+az group delete -n nina-demo
+```
+
+This will take a few minutes to complete, but when done, will leave your Azure account in the same state as it was before we started. This ability to organize, deploy and delete Azure resources as a single unit is one of the primary benefits of resource groups in the first place, so in the future, if you use Azure, I would recommend grouping resources together that you'd expect to have the same lifecycle.
 
 ## Conclusion
 
