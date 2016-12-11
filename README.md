@@ -323,6 +323,40 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 
 ## Using DocumentDB
 
+1. Go to portal.azure.com and log into the same account you were using in the CLI.
+
+    <img src="images/AzurePortal.png" width="300px" />
+
+2. Press the `N` key to create a new Azure resource, and select `Databases` then `NoSQL (DocumentDB)`
+
+    <img src="images/CreateDocDB.png" width="250px" />
+
+3. Give the instance whatever name you'd like, but configure it's `NoSQL API` to use `MongoDB` and its `Resource Group` to `Use Existing` and select the same resource group that you created for the App Service instance.
+
+    <img src="images/DocDBCreate.png" width="200px" />
+
+4. Click the `Create` button, and wait for the DB to be provisioned.
+    
+It will take a few moments to fully create the DocumentDB instance, so wait until you see the deployment successful notification in the upper right-side of the portal. Once completed, navigate to the `All Resources` tab on the left hand navigation bar (the menu item with the green grid icon), and then select the DocumentDB resource you created:
+
+<img src="images/AllResources.png" width="300px" />
+
+Click the `Connection String` menu item underneath the `Settings` section, and then click copy button next to the `Connection String` field in order to copy the MongoDB connection string to your clipboard.
+
+<img src="images/ConnectionString.png" width="400px" />
+
+Return to the `All Resources` page within the portal, and navigate to the `App Service` instance you previously created. Click the `Application Settings` menu item underneath the `Settings` section, and add a new entry underneath the `App settings` section, whose key is `MONGO_URL` and whose value is the DocumentDB connection string that we previously copied.
+
+<img src="images/AppSettings.png" width="400px" />
+
+Hit the `Save` button, and then return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created DocDB instance, which is fully emulating a MongoDB database.
+
+<img src="images/FinishedDemo.png" width="400px" />
+
+When needed, we could switch back to the DocumentDB instance, and scale up (or down) the reserved throughput that our MongoDB instance needs, and benefit from the added traffic without needing to manage any infrastructure manually.
+
+<img src="images/DocDBScale.png" width="300px" />
+
 ## Conclusion
 
 Hopefully this demo illustrated some of the ways that Visual Studio Code is trying to help improve the overall Node.js development experience. Between debugging, that supports full-stack and microservices, a rich authoring experience that provides navigation and auto-completion without any further configuration, and a large ecosystem of extensions such as Docker, that can enhance your feedback loop for other app types and practices, we're excited to keep evolving what productivity can look like from within a lightweight editor.
