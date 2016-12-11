@@ -360,3 +360,7 @@ When needed, we could switch back to the DocumentDB instance, and scale up (or d
 ## Conclusion
 
 Hopefully this demo illustrated some of the ways that Visual Studio Code is trying to help improve the overall Node.js development experience. Between debugging, that supports full-stack and microservices, a rich authoring experience that provides navigation and auto-completion without any further configuration, and a large ecosystem of extensions such as Docker, that can enhance your feedback loop for other app types and practices, we're excited to keep evolving what productivity can look like from within a lightweight editor.
+
+Additionally, between App Service and DocumentDB, we're trying to provide a productive and low-management cloud stack for MEAN apps that can scale as needed, without introducing additional infrastructure complexity.
+
+Beyond simply providing a walkthrough of the NINA 2016 demo, we hope to use this demo to continue iterating on the overall Node.js experience in both VS Code and Azure, so we can make it simpler and more flexible. If you have any questions or feedback for how we can improve things, please don't hesitate to file an issue on this repo or send me an [e-mail](mailto:joncart@microsoft.com). Thanks!
