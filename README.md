@@ -8,7 +8,7 @@ The demo makes use of a simple todo app created by and published by [Scotch.io](
 * [Project Setup](#project-setup)
 * [Integrated Terminal](#integrated-terminal)
 * [Integrated Git version control](#integrated-git-version-control)
-* [Project / Code naivigation](#project---code-navigation)
+* [Project / Code naivigation](#project--code-navigation)
 * [Auto-completion](#auto-completion)
 * [Running The App](#running-the-app)
 * [Integrated Debugging](#debugging)
@@ -236,7 +236,7 @@ Just like with the Node.js debugging, you can hover over expressions, view local
 
 With this setup, we can no effeciently debug front, back or full-stack JavaScript code directly within VS Code. Going further, the compound debugger concept isn't limited to just two target processes, and also isn't just limited to JavaScript, so if you're working on a micro-service app, that is potentially polyglot, you can use the exact same workflow we did above, once you've installed the neccesary extensions (e.g. Go, Ruby, PHP).
 
-## Docker
+## Dockererizing Your App
 
 Speaking of microservices, let's take a look at the experience that VS Code provides for developing with Docker. Many Node.js devs are using Docker for providing predictable app deployments for both development, CI and production environments. That said, we've heard lots of feedback that while the benefits of Docker are extremely high, the learning curve and cost of getting started can be fairly high. VS Code provides an extension that tries to help simplify some of that onboarding!
 
