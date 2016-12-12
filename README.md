@@ -1,8 +1,8 @@
 # Node.js Development with Visual Studio Code and Azure
 
-Between Visual Studio Code and Azure, we're trying to simplify and improve the overall developer experience of building, debugging and deploying Node.js applications. At [Node Interactive North America 2016](events.linuxfoundation.org/events/node-interactive), I was excited to be able to demo some of the work we've been doing recently based on community feedback, and this article tries captures that demo workflow for folks who are interested in trying it out and/or are looking for a little more detail than I was able to cover in my talk.
+Between Visual Studio Code and Azure, we're trying to contribute to simplifying and improving the overall developer experience of building, debugging and deploying Node.js applications. At [Node Interactive North America 2016](events.linuxfoundation.org/events/node-interactive), I was excited to be able to demo some of the work we've been doing recently based on community feedback, and this article tries captures that demo workflow for folks who are interested in trying it out and/or are looking for a little more detail than I was able to cover in my talk.
 
-The demo makes use of a simple todo app created by and published by [Scotch.io](https://scotch.io/tutorials/creating-a-single-page-todo-app-with-node-and-angular). It is a single-page MEAN app, and therefore, uses MongoDB as its database, Node/Express for the REST API/web server and Angular.js 1.x for the front-end UI. Use the following ToC to jump to particular sections of interest, otherwise read ahead.
+The demo makes use of a simple todo app created by and published by [Scotch.io](https://scotch.io/tutorials/creating-a-single-page-todo-app-with-node-and-angular). It is a single-page MEAN app, and therefore, uses MongoDB as its database, Node/Express for the REST API/web server and Angular.js 1.x for the front-end UI. Use the following ToC to jump to particular sections of interest, otherwise continue reading ahead.
 
 * [Pre-requisites](#pre-requisites)
 * [Project Setup](#project-setup)
@@ -21,7 +21,7 @@ The demo makes use of a simple todo app created by and published by [Scotch.io](
 
 ## Pre-requisites
 
-In order to effectively run-through this demo, you need to have the following software installed:
+In order to effectively run through this demo, you need to have the following software installed:
 
 1. Visual Studio Code Insiders Build, which you can download [here](https://code.visualstudio.com/insiders). You don't technically need the insiders build, however, I would encourage everyone to use it since it provides access to the latest bug fixes/feature enhancements (just like Chrome Canary builds), and is the same build that the VS Code team uses.
 
@@ -29,7 +29,7 @@ In order to effectively run-through this demo, you need to have the following so
 
 3. Azure CLI 2.0 preview, which provides installation instructions [here](https://github.com/Azure/azure-cli#installation). Additionally, you will need an Azure account, and be logged in with the Azure CLI by running `az login` and following the interactive login.
 
-4. Yarn, which provides installation instructions [here](https://yarnpkg.com/en/docs/install). This isn't technically required, however, it's used in place of the NPM client below.
+4. Yarn, which provides installation instructions [here](https://yarnpkg.com/en/docs/install). This isn't technically required, however, it's used in place of the NPM client below. I'd recommend it!
 
 Additionally, since the demo app uses MongoDB, you need to have a locally running MongoDB instance, which is listening on the standard `27017` port. The simplest way to achieve this is by running the following command after Docker is installed: `docker run -it -p 27017:27017 mongo`.
 
@@ -51,7 +51,7 @@ To get started, we need to grab the todo sample project so we can start playing 
 
     <img src="images/Explorer.png" width="150px" />
 
-Alternatively, you could use the Git CLI to clone the sample repo, however, this exercise helps illustrates some of the productivity enhancers that VS Code provides by means of the command pallete. I'd encourage you to hit `CMD+Shift+P` and browse the various commands it (and installed extensions) provides, in order to identify what else you can do.
+Alternatively, you could use the Git CLI to clone the sample repo, however, this exercise helps illustrate some of the productivity enhancers that VS Code provides by means of the command pallete. I'd encourage you to hit `CMD+Shift+P` and browse the various commands it (and installed extensions) provides, in order to identify what else you can do.
 
 ## Integrated Terminal
 
@@ -162,7 +162,7 @@ Let's set a breakpoint on line 28, which represents the Express route that will 
 
 <img src="images/Breakpoint.png" width="300px" />
 
-With that set, go back to the running app and add a todo. This immediately causes the app to suspend execution, and VS Code to pause on line 28 where we set the breakpoint:
+With that set, go back to the running app and add a todo. This immediately causes the app to suspend execution, and VS Code will pause on line 28 where we set the breakpoint:
 
 <img src="images/Debugger.png" width="300px" />
 
@@ -176,9 +176,9 @@ To demonstrate this, switch to the extensions tab and type `chrome` into the sea
 
 <img src="images/Chrome.png" width="300px" />
 
-Select the extension named `Debugger for Chrome` and click the `Install` button. After doing this, you'll need to reload VS Code to activate the extension.
+Select the extension named `Debugger for Chrome` and click the `Install` button. After doing this, you'll need to reload VS Code to activate the extension. It will persist your workspace across the restart so don't worry.
 
-Type `CTRL+P`, enter/select `luanch.json` and replace the contents of that file with the following:
+Type `CTRL+P`, enter/select `launch.json` and replace the contents of that file with the following:
 
 ```json
 {
@@ -212,14 +212,15 @@ Type `CTRL+P`, enter/select `luanch.json` and replace the contents of that file 
 
 This change does two things:
 
-1. Adds a new run configuration for Chrome, which will allow us to debug our front-end JavaScript code
-2. Adds a "compound" run configuration, which will allow us to debug our front and back-end code at the same time!
+1. Adds a new run configuration for Chrome, which will allow us to debug our front-end JavaScript code. You can hover your mouse over any of the settings that are specified to view documentation about what they do.
 
-To see this in action, switch to the debug tab in VS Code, and change the selected configuration to "Full-Stack", and then hit `F5` to run it.
+2. Adds a "compound" run configuration, which will allow us to debug our front and back-end code at the same time! The compound configuration concept is really powerful, as we'll discuss later!
+
+To see this in action, switch to the debug tab in VS Code, and change the selected configuration to "Full-Stack" (which is what we called the compound config), and then hit `F5` to run it.
 
 <img src="images/FullStackProfile.png" width="200px" />
 
-This launches the Node.js app (as can be seen in the debug console output), as well as Chrome, which is configured to navigate to the Node.js app. 
+This launches the Node.js app (as can be seen in the debug console output), as well as Chrome, which is configured to navigate to the Node.js app at `http://localhost:8080`.
 
 Type `CTRL+P` and enter/select `todos.js`, which is the main Angular controller for the app's front-end. Set a breakpoint on line 11, which is the entry-point for a new todo being created.
 
@@ -233,7 +234,7 @@ Just like with the Node.js debugging, you can hover over expressions, view local
 
 2. You can step between front and back-end code! To test this, simply hit `F5`, which will run execution and hit the breakpoint we previously set in our Express route.
 
-With this setup, we can no effeciently debug front, back or full-stack JavaScript code directly within VS Code. Going further, the compound debugger concept isn't limited to just two target processes, and isn't just limited to JavaScript, so if you're working on a micro-service app, that is potentially polyglot, you can use the exact same workflow we did above, once you've installed the neccesary extensions (e.g. Go, Ruby, PHP).
+With this setup, we can no effeciently debug front, back or full-stack JavaScript code directly within VS Code. Going further, the compound debugger concept isn't limited to just two target processes, and also isn't just limited to JavaScript, so if you're working on a micro-service app, that is potentially polyglot, you can use the exact same workflow we did above, once you've installed the neccesary extensions (e.g. Go, Ruby, PHP).
 
 ## Docker
 
@@ -267,7 +268,7 @@ With your cusor after the `t` in `mhart`, hit `CTRL+Space` to view all of the im
 
 <img src="images/DockerCompletion.png" width="300px" />
 
-Select `mhart/aline-node`, which a very efficient and small Linux distro and provides everything that this app needs, without any additional bloat.
+Select `mhart/aline-node`, which a very efficient and small Linux distro and provides everything that this app needs, without any additional bloat. Smaller images are typically better since you want your app builds and deployments to be as fast as possible!
 
 Now that we have our `Dockerfile`, we need to build the actual Docker image. Once again, we can use a command that the Docker extension installed, by typing `CMD+Shift+P` and entering `dockerb` (using "fuzzy search"). Select the `Docker: Build Image` command, choose the `/Dockerfile` that we just generated/edited, and then give a tag to the image which includes your DockerHub username (e.g. `lostintangent/node`). Hit `<ENTER>`, which will launch the integrated terminal window and display the output of your Docker image being built.
 
@@ -281,17 +282,19 @@ At this point, to make this image easily acquireable for deployments, we just ne
 
 Now that we have our app Dockerized and pushed to DockerHub, we need to actually deploy it to the cloud so we can show it off to the world. For this, we'll use Azure App Service, which is Azure's PaaS offering, and recently added two new capabilities which are relevant to Node.js developers:
 
-1. Support for Linux-based VMs, which reduces incompatibilities for apps which are built using native Node modules, or other tools which might not support Windows or behave differently.
+1. Support for Linux-based VMs, which reduces incompatibilities for apps which are built using native Node modules, or other tools which might not support Windows and/or may behave differently.
 
 2. Support for Docker-based deployments, which allow you to simply specify the name of your Docker image, and allow App Service to pull, deploy and scale the image automatically.
 
-To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to manage your Azure account and provision the neccessary infrastructure to run the todo app. Once you've logged into your account from the CLI using the `az login` command, perform the following steps in order to provision the App Service instance and deploy the todo app container:
+To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to manage your Azure account and provision the neccessary infrastructure to run the todo app. Once you've logged into your account from the CLI using the `az login` command (as mentioned in the pre-reqs), perform the following steps in order to provision the App Service instance and deploy the todo app container:
 
-1. Create the resource group, which you can think of as a "namespace" or "directory" for helping to organize Azure resources. The `-n` flag is the name of the group and can be specified as anything you want.
+1. Create a resource group, which you can think of as a "namespace" or "directory" for helping to organize Azure resources. The `-n` flag is the name of the group and can be specified as anything you want.
 
     ```shell
     az group create -n nina-demo -l westus
     ```
+
+    *Note: The `-l` flag indicates the location of the resource group. If you aren't located on the Western US coast, then hit `<TAB>` after typing `-l` and the Azure CLI will provide you with a list of available regions.*
 
 2. Create the App Service plan, which will manage creating and scaling the underlying VMs that your app is deployed to. Once again, specify any value that you'd like for the name flag, however, make sure that the `-g` flag references the name that you gave to the resource group.
 
@@ -321,8 +324,11 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 
     *Note: This may take a minute to first load your app, since App Service has to pull your Docker image from DockerHub and then start it up.*
 
+Yay! We just deployed our app. However, the spinning icon indicates that the app can't connect to the database, which makes sense because we were using a local instance of MongoDB during devleopment, which obviously isn't reachable from within the Azure datacenters. Fortunately, since we updated the app to accept the connection string via an environment variable, we just need to spin up a MongoDB server and re-configure the App Service instance to reference it.
 
 ## Using DocumentDB
+
+While we could setup a MongoDB server, or replica set, and manage that infrastructure ourselves, Azure provides another solution called DocumentDB. DocumentDB is a fully-managed, NoSQL database, which provides a MongoDB-compatibility layer. This means that you can point an existing MEAN app at it, without needing to change anything but the connection string! Let's take a look at how using it looks, using the Azure portal this time, instead of the CLI.
 
 1. Go to portal.azure.com and log into the same account you were using in the CLI.
 
