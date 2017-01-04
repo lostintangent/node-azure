@@ -43,7 +43,7 @@ To get started, we need to grab the todo sample project so we can start playing 
 
     <img src="images/GitClone.png" width="200px" />
 
-    *Note: The VS Code command pallete supports "fuzzy search", which allows you to type fewer keystrokes to find commonly used commands.*
+    > Note: The VS Code command pallete supports "fuzzy search", which allows you to type fewer keystrokes to find commonly used commands.
 
 3. Enter `https://github.com/scotch-io/node-todo` into the prompt and hit `<ENTER>`.
 
@@ -325,7 +325,7 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 
     <img src="images/BrowseApp.png" width="300px" />
 
-    *Note: This may take a minute to first load your app, since App Service has to pull your Docker image from DockerHub and then start it up.*
+    > Note: This may take a minute to first load your app, since App Service has to pull your Docker image from DockerHub and then start it up.
 
 Yay! We just deployed our app. However, the spinning icon indicates that the app can't connect to the database, which makes sense because we were using a local instance of MongoDB during development, which obviously isn't reachable from within the Azure datacenters. Fortunately, since we updated the app to accept the connection string via an environment variable, we just need to spin up a MongoDB server and re-configure the App Service instance to reference it.
 
