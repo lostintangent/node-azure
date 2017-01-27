@@ -16,6 +16,7 @@ The demo makes use of a simple todo app created by and published by [Scotch.io](
 * [Dockerizing Your App](#dockerizing-your-app)
 * [Deploying Your App](#deploying-your-app)
 * [Using DocumentDB](#using-documentdb)
+* [Hosting a Private Docker Registry](#hosting-a-private-docker-registry)
 * [Clean-up](#clean-up)
 * [Conclusion](#conclusion)
 
@@ -368,6 +369,56 @@ When needed, we could switch back to the DocumentDB instance, and scale up (or d
 <img src="images/DocDBScale.png" width="350px" />
 
 Additionally, DocumentDB automatically indexes every single document and property for you, so you don't need to worry about  profiling slow queries and/or manually fine-tuning your indexes. Just provision and scale as needed, and let DocumentDB handle the rest!
+
+## Hosting a Private Docker Registry
+
+DockerHub provides an amazing experience for distributing your container images, but there may be scenarios where you'd prefer to host your own private Docker registry, for both security as well as performance reasons. Azure provides the Azure Container Registry (ACR), which allows you to spin up your own Docker registry, whose backing storage is located in the same data center as your web app (which makes pulls quicker!), and provides you with full control over it's contents and access controls (e.g. who can push and/or pull images?). Provisioning a custom registry is as simple as running the following command, replacing the `ACR_NAME` placeholder with a globally unique value (ACR uses this to generate the registry's login URL):
+
+```shell
+az acr create -n <ACR_NAME> -g nina-demo -l westus --admin-enabled true
+```
+
+> The "admin account" isn't the recommended solution for production registries, for the sake of experimentation and simplicity, we're going with that. The output of creating your ACR instance will actually instruct you on how to create a "service principal" in Azure Active Directory, so feel free to go off the happy path using that guidance.
+
+After running this, it will display the login server URL (via the `LOGIN SERVER` column) which you'll use to authenticate against it using the Docker CLI (e.g. `ninademo-microsoft.azurecr.io`). Additionally, it generated admin credentials that you can use in order to authenticate against it. To retrieve these credentials, run the following command and grab the displayed username and password:
+
+```shell
+az acr credential show -n <ACR_NAME> -g nina-demo
+```
+
+Using these credentials, and your individual login server, you can login to the registry using the standard Docker CLI workflow:
+
+```shell
+docker login <LOGIN_SERVER> -u <USERNAME> -p <PASSWORD>
+```
+
+You can now tag your Docker container to indicate that it's associated with your private registry, using the following command (replacing `lostintangent/node` with whatever name you gave to the container image previously):
+
+```shell
+docker tag lostintangent/node <LOGIN_SERVER>/lostintangent/node
+```
+
+Finally, you can then push this newly tagged image to your private Docker registry:
+
+```shell
+docker push <LOGIN_SERVER>/lostintangent/node
+```
+
+> Alternatively, you could use the `Docker: Tag Image` and `Docker: Push` commands via the VS Code command pallette, so just go with your preferred workflow. I chose to use the CLI for these steps since we were already in the terminal.
+
+Your container is now stored in your own private registry, and the Docker CLI was happy to allow you to continue working in the same way as you did when using DockerHub. In order to instruct the App Service web app to pull from your private registry, you simply need to run the following command:
+
+```shell
+az appservice web config container update -n nina-demo-app -g nina-demo \
+    -r <LOGIN_SERVER> \
+    -c <LOGIN_SERVER>/lostintangent/node \
+    -u <USERNAME> \
+    -p <PASSWORD> 
+```
+
+> Make sure to add the `https://` prefix to the beginning of the `-r` parameter, as App Service currently expects it. However, don't add this to the container image name.
+
+If you refresh the app in your browser, everything should look and work the same, however, it's now running your app via your private Docker registry. Once you update your app, simply push the changes as done above, and update the tag in your App Service container configuration.
 
 ## Clean-up
 
