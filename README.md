@@ -372,15 +372,15 @@ Additionally, DocumentDB automatically indexes every single document and propert
 
 ## Hosting a Private Docker Registry
 
-DockerHub provides an amazing experience for distributing your container images, but there may be scenarios where you'd prefer to host your own private Docker registry, for both security as well as performance reasons. Azure provides the Azure Container Registry (ACR), which allows you to spin up your own Docker registry, whose backing storage is located in the same data center as your web app (which makes pulls quicker!), and provides you with full control over it's contents and access controls (e.g. who can push and/or pull images?). Provisioning a custom registry is as simple as running the following command, replacing the `ACR_NAME` placeholder with a globally unique value (ACR uses this to generate the registry's login URL):
+DockerHub provides an amazing experience for distributing your container images, but there may be scenarios where you'd prefer to host your own private Docker registry, for security/governance and/or performance benefits. Azure provides the [Azure Container Registry](https://azure.microsoft.com/en-us/services/container-registry/) (ACR), which allows you to spin up your own Docker registry, whose backing storage is located in the same data center as your web app (which makes pulls quicker!), and provides you with full control over its contents and access controls (e.g. who can push and/or pull images?). Provisioning a custom registry is as simple as running the following command, taking note to replace the `NAME` placeholder with a globally unique value (ACR uses this to generate the registry's login server URL):
 
 ```shell
-az acr create -n <ACR_NAME> -g nina-demo -l westus --admin-enabled true
+az acr create -n <NAME> -g nina-demo -l westus --admin-enabled true
 ```
 
-> The "admin account" isn't the recommended solution for production registries, for the sake of experimentation and simplicity, we're going with that. The output of creating your ACR instance will actually instruct you on how to create a "service principal" in Azure Active Directory, so feel free to go off the happy path using that guidance.
+> The "admin account" isn't the recommended authentication solution for production registries, however, for the sake of experimentation and simplicity, we're going with that. The output of creating your ACR instance will actually instruct you on how to create a "service principal" in Azure Active Directory, so feel free to go off the happy path using that guidance.
 
-After running this, it will display the login server URL (via the `LOGIN SERVER` column) which you'll use to authenticate against it using the Docker CLI (e.g. `ninademo-microsoft.azurecr.io`). Additionally, it generated admin credentials that you can use in order to authenticate against it. To retrieve these credentials, run the following command and grab the displayed username and password:
+After running this, it will display the login server URL (via the `LOGIN SERVER` column) which you'll use to login to it using the Docker CLI (e.g. `ninademo-microsoft.azurecr.io`). Additionally, it generated admin credentials that you can use in order to authenticate against it. To retrieve these credentials, run the following command and grab the displayed username and password:
 
 ```shell
 az acr credential show -n <ACR_NAME> -g nina-demo
@@ -398,7 +398,7 @@ You can now tag your Docker container to indicate that it's associated with your
 docker tag lostintangent/node <LOGIN_SERVER>/lostintangent/node
 ```
 
-Finally, you can then push this newly tagged image to your private Docker registry:
+Finally, you can push this newly-tagged image to your private Docker registry:
 
 ```shell
 docker push <LOGIN_SERVER>/lostintangent/node
@@ -418,7 +418,7 @@ az appservice web config container update -n nina-demo-app -g nina-demo \
 
 > Make sure to add the `https://` prefix to the beginning of the `-r` parameter, as App Service currently expects it. However, don't add this to the container image name.
 
-If you refresh the app in your browser, everything should look and work the same, however, it's now running your app via your private Docker registry. Once you update your app, simply push the changes as done above, and update the tag in your App Service container configuration.
+If you refresh the app in your browser, everything should look and work the same, however, it's now running your app via your private Docker registry! Once you update your app, simply tag and push the changes as done above, and update the tag in your App Service container configuration.
 
 ## Clean-up
 
