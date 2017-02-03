@@ -8,7 +8,7 @@ The demo makes use of a simple todo app created by and published by [Scotch.io](
 * [Project Setup](#project-setup)
 * [Integrated Terminal](#integrated-terminal)
 * [Integrated Git version control](#integrated-git-version-control)
-* [Project / Code naivigation](#project--code-navigation)
+* [Project / Code navigation](#project--code-navigation)
 * [Auto-completion](#auto-completion)
 * [Running The App](#running-the-app)
 * [Integrated Debugging](#debugging)
