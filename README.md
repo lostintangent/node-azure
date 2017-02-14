@@ -32,6 +32,8 @@ In order to effectively run through this demo, you'll need to have the following
 
 4. Yarn, which provides installation instructions [here](https://yarnpkg.com/en/docs/install). This isn't technically required, however, it's used in place of the NPM client below. I'd recommend it!
 
+5. [Chrome](https://www.google.com/chrome/browser/desktop/), which will be used for debugging the demo app's front-end later on in the walkthrough.
+
 Additionally, since the demo app uses MongoDB, you need to have a locally running MongoDB instance, which is listening on the standard `27017` port. The simplest way to achieve this is by running the following command after Docker is installed: `docker run -it -p 27017:27017 mongo`.
 
 ## Project Setup
@@ -211,6 +213,8 @@ Type `CTRL+P`, enter/select `launch.json` and replace the contents of that file 
     ]
 }
 ```
+
+> If neccessary, make sure to change the URL and/or port of your app if `http://localhost:8080` isn't correct. Otherwise, this launch configurion won't work.
 
 This change does two things:
 
