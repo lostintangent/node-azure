@@ -28,7 +28,7 @@ In order to effectively run through this demo, you'll need to have the following
 
 2. Docker, which can be downloaded [here](https://www.docker.com/products/docker). Additionally, you will need to have a [DockerHub](https://hub.docker.com/) account in order to publish the Docker images that will be created in the walkthrough.
 
-3. Azure CLI (>=`v0.1.0b11`), which provides installation instructions [here](https://github.com/Azure/azure-cli#interactive-install-script).  Additionally, you will need an Azure account, and be logged in with the Azure CLI by running `az login` and following the interactive login.
+3. Azure CLI (>=`2.0.0`), which provides installation instructions [here](https://github.com/Azure/azure-cli#interactive-install-script).  Additionally, you will need an Azure account, and be logged in with the Azure CLI by running `az login` and following the interactive login.
 
 4. Yarn, which provides installation instructions [here](https://yarnpkg.com/en/docs/install). This isn't technically required, however, it's used in place of the NPM client below. I'd recommend it!
 
@@ -381,7 +381,7 @@ Additionally, DocumentDB automatically indexes every single document and propert
 DockerHub provides an amazing experience for distributing your container images, but there may be scenarios where you'd prefer to host your own private Docker registry, for security/governance and/or performance benefits. Azure provides the [Azure Container Registry](https://azure.microsoft.com/en-us/services/container-registry/) (ACR), which allows you to spin up your own Docker registry, whose backing storage is located in the same data center as your web app (which makes pulls quicker!), and provides you with full control over its contents and access controls (e.g. who can push and/or pull images?). Provisioning a custom registry is as simple as running the following command, taking note to replace the `NAME` placeholder with a globally unique value (ACR uses this to generate the registry's login server URL):
 
 ```shell
-az acr create -n <NAME> -g nina-demo -l westus --admin-enabled true
+az acr create -n <NAME> -g nina-demo -l westus --admin-enabled
 ```
 
 > The "admin account" isn't the recommended authentication solution for production registries, however, for the sake of experimentation and simplicity, we're going with that. The output of creating your ACR instance will actually instruct you on how to create a "service principal" in Azure Active Directory, so feel free to go off the happy path using that guidance.
