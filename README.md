@@ -395,7 +395,7 @@ Additionally, DocumentDB automatically indexes every single document and propert
 DockerHub provides an amazing experience for distributing your container images, but there may be scenarios where you'd prefer to host your own private Docker registry, for security/governance and/or performance benefits. Azure provides the [Azure Container Registry](https://azure.microsoft.com/en-us/services/container-registry/) (ACR), which allows you to spin up your own Docker registry, whose backing storage is located in the same data center as your web app (which makes pulls quicker!), and provides you with full control over its contents and access controls (e.g. who can push and/or pull images?). Provisioning a custom registry is as simple as running the following command, taking note to replace the `NAME` placeholder with a globally unique value (ACR uses this to generate the registry's login server URL):
 
 ```shell
-az acr create -n <NAME> -g nina-demo -l westus --admin-enabled
+az acr create -n <NAME> -l westus --admin-enabled
 ```
 
 > The "admin account" isn't the recommended authentication solution for production registries, however, for the sake of experimentation and simplicity, we're going with that. The output of creating your ACR instance will actually instruct you on how to create a "service principal" in Azure Active Directory, so feel free to go off the happy path using that guidance.
@@ -403,7 +403,7 @@ az acr create -n <NAME> -g nina-demo -l westus --admin-enabled
 After running this, it will display the login server URL (via the `LOGIN SERVER` column) which you'll use to login to it using the Docker CLI (e.g. `ninademo-microsoft.azurecr.io`). Additionally, it generated admin credentials that you can use in order to authenticate against it. To retrieve these credentials, run the following command and grab the displayed username and password:
 
 ```shell
-az acr credential show -n <ACR_NAME> -g nina-demo
+az acr credential show -n <ACR_NAME>
 ```
 
 Using these credentials, and your individual login server, you can login to the registry using the standard Docker CLI workflow:
@@ -429,7 +429,7 @@ docker push <LOGIN_SERVER>/lostintangent/node
 Your container is now stored in your own private registry, and the Docker CLI was happy to allow you to continue working in the same way as you did when using DockerHub. In order to instruct the App Service web app to pull from your private registry, you simply need to run the following command:
 
 ```shell
-az appservice web config container update -n nina-demo-app -g nina-demo \
+az appservice web config container update \
     -r <LOGIN_SERVER> \
     -c <LOGIN_SERVER>/lostintangent/node \
     -u <USERNAME> \
@@ -445,7 +445,7 @@ If you refresh the app in your browser, everything should look and work the same
 To ensure that you don't get charged for any Azure resources you aren't using, simply run the following command from your terminal to delete all of the resources we just provisioned:
 
 ```shell
-az group delete -n nina-demo
+az group delete
 ```
 
 This will take a few minutes to complete, but when done, will leave your Azure account in the same state as it was before we started. This ability to organize, deploy and delete Azure resources as a single unit is one of the primary benefits of resource groups in the first place, so in the future, if you use Azure, I would recommend grouping resources together that you'd expect to have the same lifetime.
