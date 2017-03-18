@@ -304,30 +304,42 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 
     *Note: The `-l` flag indicates the location of the resource group. While in preview, the App Service on Linux support is only available in select regions, so if you aren't located in the Western US, and you want to check which other regions are available, simply run `az appservice list-locations --linux-workers-enabled` from the CLI to view your datacenter options.*
 
-2. Create the App Service plan, which will manage creating and scaling the underlying VMs that your app is deployed to. Once again, specify any value that you'd like for the name flag, however, make sure that the `-g` flag references the name that you gave to the resource group above.
+2. Set the newly created resource group as the default one, so that you can continue to use the CLI without needing to explicitly specify it:
+
+   ```shell
+   az configure -d group=nina-demo
+   ```
+
+3. Create the App Service plan, which will manage creating and scaling the underlying VMs that your app is deployed to. Once again, specify any value that you'd like for the name flag, however, make sure that the `-g` flag references the name that you gave to the resource group above.
 
     ```shell
-    az appservice plan create -n nina-demo-plan -g nina-demo --is-linux
+    az appservice plan create -n nina-demo-plan --is-linux
     ```
     
     *Note: The `--is-linux` flag is key, since that is what indicates that you want Linux-based VMs. Without it, the CLI will provision Windows-based VMs.*
 
-3. Create the App Service web app, which represents the todo app that will be running within the plan and resource group we just created. You can roughly think of a web app as being synonymous with a process or container, and the plan as being the VM/container host that they're running on.
+4. Create the App Service web app, which represents the todo app that will be running within the plan and resource group we just created. You can roughly think of a web app as being synonymous with a process or container, and the plan as being the VM/container host that they're running on.
 
     ```shell
-    az appservice web create -n nina-demo-app -p nina-demo-plan -g nina-demo
+    az appservice web create -n nina-demo-app -p nina-demo-plan
     ```
 
-4. Configure the web app to use our Docker image, making sure to set the `-c` flag to the name of your DockerHub account/image name:
+5. Set the newly created web app as the default web instance, so that you can continue to use the CLI without needing to explicitly specify it:
 
     ```shell
-    az appservice web config container update -n nina-demo-app -g nina-demo -c lostintangent/node
+    az configure -d web=nina-demo-app
     ```
 
-5. Launch the app to view the container that was just deployed, which will be available at an `*.azurewebsites.net` URL:
+6. Configure the web app to use our Docker image, making sure to set the `-c` flag to the name of your DockerHub account/image name:
 
     ```shell
-    az appservice web browse -n nina-demo-app -g nina-demo
+    az appservice web config container update -c lostintangent/node
+    ```
+
+7. Launch the app to view the container that was just deployed, which will be available at an `*.azurewebsites.net` URL:
+
+    ```shell
+    az appservice web browse
     ```
 
     <img src="images/BrowseApp.png" width="300px" />
@@ -362,11 +374,13 @@ Click the `Connection String` menu item underneath the `Settings` section, and t
 
 <img src="images/ConnectionString.png" width="450px" />
 
-Return to the `All Resources` page within the portal, and navigate to the `App Service` instance you previously created. Click the `Application Settings` menu item underneath the `Settings` section, and add a new entry underneath the `App settings` section, whose key is `MONGO_URL` and whose value is the DocumentDB connection string that we previously copied.
+Return to your terminal, and run the following command, making sure to replace `<URL>` with the DocumentDB connection string that was copied from the previous step:
 
-<img src="images/AppSettings.png" width="450px" />
+```shell
+az appservice web config appsettings update --settings MONGO_URL=<URL>
+```
 
-Hit the `Save` button, and then return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created DocumentDB instance, which is fully emulating a MongoDB database.
+Return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created DocumentDB instance, which is fully emulating a MongoDB database.
 
 <img src="images/FinishedDemo.png" width="450px" />
 
