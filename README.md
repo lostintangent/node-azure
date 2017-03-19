@@ -134,23 +134,15 @@ You can see which libraries support this auto-complete capability by browsing th
 
 ## Running The App
 
-Now that we've explored and tweaked this app a bit, now is time to run it. To do this, simply hit `F5` to run the app. Because this is the first time we've ever tried to run it, we're asked to specify the type of "run configuration" we want to use:
-
-<img src="images/DebugConfig.png" width="450px" />
-
-Select `Node.js v6.3+ (Experimental)`, which will use the new Chrome Debugging Protocol support that was recently added to Node.js. Doing this generates a new file in your project called `launch.json`, which simply tells VS Code how to launch and/or attach to your app in order to debug it.
-
-<img src="images/LaunchJson.png" width="300px" />
-
-Notice that it was able to detect that the app's startup script is `server.js`, and once again, we don't need to change anything in order to make debugging just work.
-
-At this point, hit `F5` again to run the app. This will launch the app, along with the `Debug Console` window in VS Code, which displays stdout for our newly running app.
+Now that we've explored and tweaked this app a bit, now is time to run it. To do this, simply hit `F5` to run the app. This will launch the app, along with the `Debug Console` window in VS Code, which displays stdout for our newly running app.
 
 <img src="images/Console.png" width="450px" />
 
 Additionally, this console is actually attached to our newly running app, so you can type JavaScript expressions, which will be evaluated in the app, and also includes auto-completion! For example, try typing `process.env` in the console to see what I mean.
 
 <img src="images/ConsoleCode.png" width="450px" />
+
+> Note: We were able to simply hit `F5` to run the app because the currently focused editor represented a JavaScript file (`server.js`). This made VS Code assume that our project was a Node.js app, and therefore, it knew how to run it without any further assistance. If we hadn't had a JS file open, then hitting `F5` would have asked us what our app type is (e.g. Node.js, .NET Core) and then ran it.
 
 If you open a browser, you can navigate to `http://localhost:8080` and see the running app. Type a message into the textbox and add/remove a few todos to get a feel for how the app works.
 
@@ -164,7 +156,7 @@ Let's set a breakpoint on line 28, which represents the Express route that will 
 
 <img src="images/Breakpoint.png" width="350px" />
 
-*Note: In addition to standard breakpoints, VS Code also supports conditional breakpoints, which allow you to customize when the app should suspend execution. To use them, simply right-click the gutter, select `Add Conditional Breakpoint...`, and specify either the JavaScript expression (e.g. `foo = "bar"`) or hit count that you'd like to condition the breakpoint on.*
+> Note: In addition to standard breakpoints, VS Code also supports conditional breakpoints, which allow you to customize when the app should suspend execution. To use them, simply right-click the gutter, select `Add Conditional Breakpoint...`, and specify either the JavaScript expression (e.g. `foo = "bar"`) or hit count that you'd like to condition the breakpoint on.
 
 With that set, go back to the running app and add a todo. This immediately causes the app to suspend execution, and VS Code will pause on line 28 where we set the breakpoint:
 
@@ -182,47 +174,70 @@ To demonstrate this, switch to the extensions tab and type `chrome` into the sea
 
 Select the extension named `Debugger for Chrome` and click the `Install` button. After doing this, you'll need to reload VS Code to activate the extension. It will persist your workspace across the restart so don't worry about losing any state.
 
-Type `CTRL+P`, enter/select `launch.json` and replace the contents of that file with the following:
+While we were able to debug our Node.js app without any VS Code-specific configuration, in order to debug a front-end web app, we currently need to generated a `launch.json` file in order to instruct VS Code how to run the app. To do this, switch to the `Debug` tab and click the gear icon.
+
+<img src="images/DebugGear.png" width="350px" />
+
+This will generate a `launch.json` file which simply tells VS Code how to launch and/or attach to your app in order to debug it. 
 
 ```json
 {
+    // Use IntelliSense to learn about possible Node.js debug attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "compounds": [
-        {
-            "name": "Full-Stack",
-            "configurations": ["Node", "Chrome"]
-        }
-    ],
     "configurations": [
         {
-            "name": "Chrome",
-            "type": "chrome",
+            "type": "node",
             "request": "launch",
-            "url": "http://localhost:8080",
-            "port": 9222,
-            "userDataDir": "${workspaceRoot}/.vscode/chrome",
-            "webRoot": "${workspaceRoot}/public"
+            "name": "Launch Program",
+            "program": "${workspaceRoot}/server.js"
         },
         {
-            "name": "Node",
-            "type": "node2",
-            "request": "launch",
-            "program": "${workspaceRoot}/server.js",
-            "cwd": "${workspaceRoot}"
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to Port",
+            "address": "localhost",
+            "port": 5858
         }
     ]
 }
 ```
 
-> If neccessary, make sure to change the URL and/or port of your app if `http://localhost:8080` isn't correct. Otherwise, this launch configurion won't work.
+Notice that it was able to detect that the app's startup script is `server.js`, and once again, we don't need to change anything in order to make debugging just work. With the `launch.json` file opened, click the big blue `Add Configuration...` button in the bottom right, and select `Chrome: Launch with userDataDir`.
 
-This change does two things:
+<img src="images/AddChromeConfig.png" width="350px" />
 
-1. Adds a new run configuration for Chrome, which will allow us to debug our front-end JavaScript code. You can hover your mouse over any of the settings that are specified to view documentation about what they do. Nice!
+This adds a new run configuration for Chrome, which will allow us to debug our front-end JavaScript code. You can hover your mouse over any of the settings that are specified to view documentation about what they do. Additionally, notice that it automatically detected the URL of our app. Update the `webRoot` property to `${workspaceRoot}/public` so that the Chrome debugger will know where to find your front-end assets:
 
-2. Adds a "compound" run configuration, which will allow us to debug our front and back-end code at the same time! The compound configuration concept is really powerful, as we'll discuss later!
+```json
+{
+   "type": "chrome",
+   "request": "launch",
+   "name": "Launch Chrome",
+   "url": "http://localhost:8080",
+   "webRoot": "${workspaceRoot}/public",
+   "userDataDir": "${workspaceRoot}/.vscode/chrome"
+}
+```
 
-To see this in action, switch to the debug tab in VS Code, and change the selected configuration to "Full-Stack" (which is what we called the compound config, you can name it anything you want), and then hit `F5` to run it.
+Add a "compound" run configuration, which will allow us to debug our front and back-end code at the same time! The compound configuration concept is really powerful, as we'll discuss later!
+
+```json
+{
+    ...
+    "compounds": [
+        {
+            "name": "Full-Stack",
+            "configurations": ["Launch Program", "Launch Chrome"]
+        }
+    ],
+    "configurations": [
+       ...
+}
+```
+
+To see this in action, switch to the debug tab in VS Code, and change the selected configuration to `Full-Stack` (which is what we called the compound config, you can name it anything you want), and then hit `F5` to run it.
 
 <img src="images/FullStackProfile.png" width="250px" />
 
