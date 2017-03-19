@@ -134,7 +134,7 @@ You can see which libraries support this auto-complete capability by browsing th
 
 ## Running The App
 
-Now that we've explored and tweaked this app a bit, now is time to run it. To do this, simply hit `F5` to run the app. This will launch the app, along with the `Debug Console` window in VS Code, which displays stdout for our newly running app.
+Now that we've explored and tweaked this app a bit, now is time to run it. To do this, simply hit `F5`. This will launch the app, along with the `Debug Console` window in VS Code, which displays stdout for our newly running app.
 
 <img src="images/Console.png" width="450px" />
 
@@ -174,7 +174,7 @@ To demonstrate this, switch to the extensions tab and type `chrome` into the sea
 
 Select the extension named `Debugger for Chrome` and click the `Install` button. After doing this, you'll need to reload VS Code to activate the extension. It will persist your workspace across the restart so don't worry about losing any state.
 
-While we were able to debug our Node.js app without any VS Code-specific configuration, in order to debug a front-end web app, we currently need to generated a `launch.json` file in order to instruct VS Code how to run the app. To do this, switch to the `Debug` tab and click the gear icon.
+While we were able to run/debug our Node.js app without any VS Code-specific configuration, in order to debug a front-end web app, we currently need to generate a `launch.json` file in order to instruct VS Code how to run the app. To do this, switch to the `Debug` tab and click the gear icon (which should have a little red dot on top of it).
 
 <img src="images/DebugGear.png" width="350px" />
 
@@ -218,19 +218,13 @@ This adds a new run configuration for Chrome, which will allow us to debug our f
 }
 ```
 
-Add a "compound" run configuration, which will allow us to debug our front and back-end code at the same time! The compound configuration concept is really powerful, as we'll discuss later!
+In order to debug both the front and back-end at the same time, we need to create a "compound" run configuration, which tells VS Code which set of configurations to run in parallel. Add the following snippet as a top-level property within the `launch.json` file (as a sibling of the existing `configurations` property. The compound configuration concept is really powerful, as we'll discuss later!
 
 ```json
+"compounds": [
 {
-    ...
-    "compounds": [
-        {
-            "name": "Full-Stack",
-            "configurations": ["Launch Program", "Launch Chrome"]
-        }
-    ],
-    "configurations": [
-       ...
+   "name": "Full-Stack",
+   "configurations": ["Launch Program", "Launch Chrome"]
 }
 ```
 
