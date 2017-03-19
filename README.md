@@ -224,10 +224,11 @@ In order to debug both the front and back-end at the same time, we need to creat
 
 ```json
 "compounds": [
-{
-   "name": "Full-Stack",
-   "configurations": ["Launch Program", "Launch Chrome"]
-}
+   {
+      "name": "Full-Stack",
+      "configurations": ["Launch Program", "Launch Chrome"]
+   }
+]
 ```
 
 To see this in action, switch to the debug tab in VS Code, and change the selected configuration to `Full-Stack` (which is what we called the compound config, you can name it anything you want), and then hit `F5` to run it.
