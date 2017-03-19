@@ -143,7 +143,7 @@ Additionally, this console is actually attached to our newly running app, so you
 <img src="images/ConsoleCode.png" width="450px" />
 
 > Note: We were able to simply hit `F5` to run the app because the currently focused editor represented a JavaScript file (`server.js`). This made VS Code assume that our project was a Node.js app, and therefore, it knew how to run it without any further assistance. If we hadn't had a JS file open, then hitting `F5` would have asked us what our app type is (the list is based on the extensions you have installed) and then ran it.
-
+>
 > <img src="images/SelectEnv.png" width="450px" />
 
 If you open a browser, you can navigate to `http://localhost:8080` and see the running app. Type a message into the textbox and add/remove a few todos to get a feel for how the app works.
