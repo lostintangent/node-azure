@@ -318,34 +318,28 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
    ```shell
    az configure -d group=nina-demo
    ```
-
-3. Create the App Service plan, which will manage creating and scaling the underlying VMs that your app is deployed to. Once again, specify any value that you'd like for the name flag, however, make sure that the `-g` flag references the name that you gave to the resource group above.
+   
+3. Create the App Service web app, which represents the todo app that will be running within the plan and resource group we just created. You can roughly think of a web app as being synonymous with a process or container, and the plan as being the VM/container host that they're running on.
 
     ```shell
-    az appservice plan create -n nina-demo-plan --is-linux
+    az appservice web create -n nina-demo-app --is-linux
     ```
     
-    *Note: The `--is-linux` flag is key, since that is what indicates that you want Linux-based VMs. Without it, the CLI will provision Windows-based VMs.*
+    *Note: The `--is-linux` flag is key, since that is what indicates that you want Linux-based VMs. Without it, the CLI will provision Windows-based VMs.*   
 
-4. Create the App Service web app, which represents the todo app that will be running within the plan and resource group we just created. You can roughly think of a web app as being synonymous with a process or container, and the plan as being the VM/container host that they're running on.
-
-    ```shell
-    az appservice web create -n nina-demo-app -p nina-demo-plan
-    ```
-
-5. Set the newly created web app as the default web instance, so that you can continue to use the CLI without needing to explicitly specify it:
+4. Set the newly created web app as the default web instance, so that you can continue to use the CLI without needing to explicitly specify it:
 
     ```shell
     az configure -d web=nina-demo-app
     ```
 
-6. Configure the web app to use our Docker image, making sure to set the `-c` flag to the name of your DockerHub account/image name:
+5. Configure the web app to use our Docker image, making sure to set the `-c` flag to the name of your DockerHub account/image name:
 
     ```shell
     az appservice web config container update -c lostintangent/node
     ```
 
-7. Launch the app to view the container that was just deployed, which will be available at an `*.azurewebsites.net` URL:
+6. Launch the app to view the container that was just deployed, which will be available at an `*.azurewebsites.net` URL:
 
     ```shell
     az appservice web browse
