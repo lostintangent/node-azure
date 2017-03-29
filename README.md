@@ -353,9 +353,9 @@ Yay! We just deployed our app. However, the spinning icon indicates that the app
 
 ## Using DocumentDB
 
-While we could setup a MongoDB server, or replica set, and manage that infrastructure ourselves, Azure provides another solution called DocumentDB. DocumentDB is a fully-managed, geo-replicable, high-performance, NoSQL database, which provides a MongoDB-compatibility layer. This means that you can point an existing MEAN app at it, without needing to change anything but the connection string! Let's take a look at how using it looks.
+While we could setup a MongoDB server, or replica set, and manage that infrastructure ourselves, Azure provides another solution called [DocumentDB](https://azure.microsoft.com/en-us/services/documentdb/). DocumentDB is a fully-managed, geo-replicable, high-performance, NoSQL database, which provides a MongoDB-compatibility layer. This means that you can point an existing MEAN app at it (or any MongoDB client/tool such as [Studio 3T](https://studio3t.com/)), without needing to change anything but the connection string! Let's take a look at how this works:
 
-1. Head back to your terminal, and run the following command in order to create a MongoDB-compatible instance of the DocumentDB service. Feel free to give the instance whatever name you'd like, by taking note to replace the `<NAME>` placeholder with a globally unique value (DocumentDC uses this name to generate the database's server URL):
+1. Head back to your terminal, and run the following command in order to create a MongoDB-compatible instance of the DocumentDB service. Feel free to name the instance whatever you'd like, by taking note to replace the `<NAME>` placeholder below with a globally unique value (DocumentDB uses this name to generate the database's server URL):
 
    ```shell
    DOCDB_NAME=<NAME>
@@ -368,15 +368,15 @@ While we could setup a MongoDB server, or replica set, and manage that infrastru
    MONGO_URL=(az documentdb list-connection-strings -n $DOCDB_NAME -otsv --query "connectionStrings[0].connectionString")
    ```
 
-3. Update your web app's `MONGO_URL` environment variable, so that it's connecting to the newly provisioned DocumentDB instance:
+3. Update your web app's `MONGO_URL` environment variable, so that it connects to the newly provisioned DocumentDB instance, instead of attempting to connect to a locally running MongoDB server (which doesn't exist!):
 
     ```shell
     az appservice web config appsettings update --settings MONGO_URL=$MONGO_URL
     ```
 
-Return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created DocumentDB instance, which is fully emulating a MongoDB database.
+4. Return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created DocumentDB instance, which is fully emulating a MongoDB database.
 
-<img src="images/FinishedDemo.png" width="450px" />
+    <img src="images/FinishedDemo.png" width="450px" />
 
 When needed, we could switch back to the DocumentDB instance, and scale up (or down) the reserved throughput that our MongoDB instance needs, and benefit from the added traffic without needing to manage any infrastructure manually.
 
