@@ -380,8 +380,6 @@ Return to your browser and refresh it. Try adding and removing a todo item, to p
 
 When needed, we could switch back to the DocumentDB instance, and scale up (or down) the reserved throughput that our MongoDB instance needs, and benefit from the added traffic without needing to manage any infrastructure manually.
 
-<img src="images/DocDBScale.png" width="350px" />
-
 Additionally, DocumentDB automatically indexes every single document and property for you, so you don't need to worry about  profiling slow queries and/or manually fine-tuning your indexes. Just provision and scale as needed, and let DocumentDB handle the rest!
 
 ## Hosting a Private Docker Registry
