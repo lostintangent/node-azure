@@ -353,35 +353,26 @@ Yay! We just deployed our app. However, the spinning icon indicates that the app
 
 ## Using DocumentDB
 
-While we could setup a MongoDB server, or replica set, and manage that infrastructure ourselves, Azure provides another solution called DocumentDB. DocumentDB is a fully-managed, geo-replicable, high-performance, NoSQL database, which provides a MongoDB-compatibility layer. This means that you can point an existing MEAN app at it, without needing to change anything but the connection string! Let's take a look at how using it looks, using the Azure portal this time, instead of the CLI.
+While we could setup a MongoDB server, or replica set, and manage that infrastructure ourselves, Azure provides another solution called DocumentDB. DocumentDB is a fully-managed, geo-replicable, high-performance, NoSQL database, which provides a MongoDB-compatibility layer. This means that you can point an existing MEAN app at it, without needing to change anything but the connection string! Let's take a look at how using it looks.
 
-1. Go to portal.azure.com and log into the same account you were using in the CLI.
+1. Head back to your terminal, and run the following command in order to create a MongoDB-compatible instance of the DocumentDB service. Feel free to give the instance whatever name you'd like by replacing `<NAME>` with your desired name:
 
-    <img src="images/AzurePortal.png" width="350px" />
+   ```shell
+   DOCDB_NAME=<NAME>
+   az documentdb create -n $DOCDB_NAME --kind MongoDB
+   ```
 
-2. Press the `N` key to create a new Azure resource, and select `Databases` then `NoSQL (DocumentDB)`
+2. Retrieve the MongoDB connection string for this instance by running the following command:
 
-    <img src="images/CreateDocDB.png" width="300px" />
+   ```shell
+   MONGO_URL=(az documentdb list-connection-strings -n $DOCDB_NAME -otsv --query "connectionStrings[0].connectionString")
+   ```
 
-3. Give the instance whatever name you'd like, but configure its `NoSQL API` to use `MongoDB` and its `Resource Group` to `Use Existing` and select the same resource group that you created for the App Service instance.
+3. Update your web app's `MONGO_URL` environment variable, so that it's connecting to the newly provisioned DocumentDB instance:
 
-    <img src="images/DocDBCreate.png" width="250px" />
-
-4. Click the `Create` button, and wait for the DB to be provisioned.
-    
-It will take a few moments to fully create the DocumentDB instance, so wait until you see the deployment successful notification in the upper right-side of the portal. Once completed, navigate to the `All Resources` tab on the left hand navigation bar (the menu item with the green grid icon), and then select the DocumentDB resource you created:
-
-<img src="images/AllResources.png" width="350px" />
-
-Click the `Connection String` menu item underneath the `Settings` section, and then click copy button next to the `Connection String` field in order to copy the MongoDB connection string to your clipboard.
-
-<img src="images/ConnectionString.png" width="450px" />
-
-Return to your terminal, and run the following command, making sure to replace `<URL>` with the DocumentDB connection string that was copied from the previous step:
-
-```shell
-az appservice web config appsettings update --settings MONGO_URL=<URL>
-```
+    ```shell
+    az appservice web config appsettings update --settings MONGO_URL=$MONGO_URL
+    ```
 
 Return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created DocumentDB instance, which is fully emulating a MongoDB database.
 
@@ -398,7 +389,8 @@ Additionally, DocumentDB automatically indexes every single document and propert
 DockerHub provides an amazing experience for distributing your container images, but there may be scenarios where you'd prefer to host your own private Docker registry, for security/governance and/or performance benefits. Azure provides the [Azure Container Registry](https://azure.microsoft.com/en-us/services/container-registry/) (ACR), which allows you to spin up your own Docker registry, whose backing storage is located in the same data center as your web app (which makes pulls quicker!), and provides you with full control over its contents and access controls (e.g. who can push and/or pull images?). Provisioning a custom registry is as simple as running the following command, taking note to replace the `NAME` placeholder with a globally unique value (ACR uses this to generate the registry's login server URL):
 
 ```shell
-az acr create -n <NAME> -l westus --admin-enabled
+ACR_NAME=<NAME>
+az acr create -n $ACR_NAME -l westus --admin-enabled
 ```
 
 > The "admin account" isn't the recommended authentication solution for production registries, however, for the sake of experimentation and simplicity, we're going with that. The output of creating your ACR instance will actually instruct you on how to create a "service principal" in Azure Active Directory, so feel free to go off the happy path using that guidance.
@@ -406,7 +398,7 @@ az acr create -n <NAME> -l westus --admin-enabled
 After running this, it will display the login server URL (via the `LOGIN SERVER` column) which you'll use to login to it using the Docker CLI (e.g. `ninademo-microsoft.azurecr.io`). Additionally, it generated admin credentials that you can use in order to authenticate against it. To retrieve these credentials, run the following command and grab the displayed username and password:
 
 ```shell
-az acr credential show -n <ACR_NAME>
+az acr credential show -n $ACR_NAME
 ```
 
 Using these credentials, and your individual login server, you can login to the registry using the standard Docker CLI workflow:
