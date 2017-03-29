@@ -355,7 +355,7 @@ Yay! We just deployed our app. However, the spinning icon indicates that the app
 
 While we could setup a MongoDB server, or replica set, and manage that infrastructure ourselves, Azure provides another solution called DocumentDB. DocumentDB is a fully-managed, geo-replicable, high-performance, NoSQL database, which provides a MongoDB-compatibility layer. This means that you can point an existing MEAN app at it, without needing to change anything but the connection string! Let's take a look at how using it looks.
 
-1. Head back to your terminal, and run the following command in order to create a MongoDB-compatible instance of the DocumentDB service. Feel free to give the instance whatever name you'd like by replacing `<NAME>` with your desired name:
+1. Head back to your terminal, and run the following command in order to create a MongoDB-compatible instance of the DocumentDB service. Feel free to give the instance whatever name you'd like, by taking note to replace the `<NAME>` placeholder with a globally unique value (DocumentDC uses this name to generate the database's server URL):
 
    ```shell
    DOCDB_NAME=<NAME>
@@ -386,7 +386,7 @@ Additionally, DocumentDB automatically indexes every single document and propert
 
 ## Hosting a Private Docker Registry
 
-DockerHub provides an amazing experience for distributing your container images, but there may be scenarios where you'd prefer to host your own private Docker registry, for security/governance and/or performance benefits. Azure provides the [Azure Container Registry](https://azure.microsoft.com/en-us/services/container-registry/) (ACR), which allows you to spin up your own Docker registry, whose backing storage is located in the same data center as your web app (which makes pulls quicker!), and provides you with full control over its contents and access controls (e.g. who can push and/or pull images?). Provisioning a custom registry is as simple as running the following command, taking note to replace the `NAME` placeholder with a globally unique value (ACR uses this to generate the registry's login server URL):
+DockerHub provides an amazing experience for distributing your container images, but there may be scenarios where you'd prefer to host your own private Docker registry, for security/governance and/or performance benefits. Azure provides the [Azure Container Registry](https://azure.microsoft.com/en-us/services/container-registry/) (ACR), which allows you to spin up your own Docker registry, whose backing storage is located in the same data center as your web app (which makes pulls quicker!), and provides you with full control over its contents and access controls (e.g. who can push and/or pull images?). Provisioning a custom registry is as simple as running the following command, taking note to replace the `<NAME>` placeholder with a globally unique value (ACR uses this to generate the registry's login server URL):
 
 ```shell
 ACR_NAME=<NAME>
