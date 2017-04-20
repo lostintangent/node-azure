@@ -17,6 +17,7 @@ The demo makes use of a simple todo app created by and published by [Scotch.io](
 * [Deploying Your App](#deploying-your-app)
 * [Using DocumentDB](#using-documentdb)
 * [Hosting a Private Docker Registry](#hosting-a-private-docker-registry)
+* [Configuring a custom domain name](#configuring-a-custom-domain-name)
 * [Clean-up](#clean-up)
 * [Conclusion](#conclusion)
 
@@ -220,7 +221,7 @@ This adds a new run configuration for Chrome, which will allow us to debug our f
 }
 ```
 
-In order to debug both the front and back-end at the same time, we need to create a "compound" run configuration, which tells VS Code which set of configurations to run in parallel. Add the following snippet as a top-level property within the `launch.json` file (as a sibling of the existing `configurations` property. The compound configuration concept is really powerful, as we'll discuss later!
+In order to launch/debug both the front and back-end at the same time, we need to create a "compound" run configuration, which tells VS Code which set of configurations to run in parallel. Add the following snippet as a top-level property within the `launch.json` file (as a sibling of the existing `configurations` property). The compound configuration concept is really powerful, as we'll discuss later!
 
 ```json
 "compounds": [
@@ -230,6 +231,8 @@ In order to debug both the front and back-end at the same time, we need to creat
    }
 ]
 ```
+
+> Note: The string values specified in the `compounds.configurations` array simply refer to the `name` of individual entries in the list of `configurations`. If you've customized your names, then simply reflect that in the compound definition.
 
 To see this in action, switch to the debug tab in VS Code, and change the selected configuration to `Full-Stack` (which is what we called the compound config, you can name it anything you want), and then hit `F5` to run it.
 
@@ -319,27 +322,35 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
    az configure -d group=nina-demo
    ```
    
-3. Create the App Service web app, which represents the todo app that will be running within the plan and resource group we just created. You can roughly think of a web app as being synonymous with a process or container, and the plan as being the VM/container host that they're running on.
+3. Create the App Service "plan", which will manage creating and scaling the underlying VMs that your app is deployed to. Once again, specify any value that you'd like for the name flag.
 
     ```shell
-    az appservice web create -n nina-demo-app --is-linux
+    az appservice plan create -n nina-demo-plan --is-linux
     ```
-    
-    *Note: The `--is-linux` flag is key, since that is what indicates that you want Linux-based VMs. Without it, the CLI will provision Windows-based VMs.*   
 
-4. Set the newly created web app as the default web instance, so that you can continue to use the CLI without needing to explicitly specify it:
+    > Note: The --is-linux flag is key, since that is what indicates that you want Linux-based VMs. Without it, the CLI will provision Windows-based VMs.
+
+4. Create the App Service web app, which represents the actual todo app that will be running within the plan and resource group we just created. You can roughly think of a web app as being synonymous with a process or container, and the plan as being the VM/container host that they're running on.
+
+    ```shell
+    az appservice web create -n nina-demo-app -p nina-demo-plan
+    ``` 
+
+5. Set the newly created web app as the default web instance, so that you can continue to use the CLI without needing to explicitly specify it:
 
     ```shell
     az configure -d web=nina-demo-app
     ```
 
-5. Configure the web app to use our Docker image, making sure to set the `-c` flag to the name of your DockerHub account/image name:
+6. Configure the web app to use our Docker image, making sure to set the `-c` flag to the name of your DockerHub account/image name:
 
     ```shell
     az appservice web config container update -c lostintangent/node
     ```
 
-6. Launch the app to view the container that was just deployed, which will be available at an `*.azurewebsites.net` URL:
+    > Note: If instead of using a custom container, you'd prefer to do Git deployment, check out the instructions for setting that up [here](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-nodejs#configure-to-use-nodejs).
+
+7. Launch the app to view the container that was just deployed, which will be available at an `*.azurewebsites.net` URL:
 
     ```shell
     az appservice web browse
@@ -432,6 +443,26 @@ az appservice web config container update \
 > Make sure to add the `https://` prefix to the beginning of the `-r` parameter, as App Service currently expects it. However, don't add this to the container image name.
 
 If you refresh the app in your browser, everything should look and work the same, however, it's now running your app via your private Docker registry! Once you update your app, simply tag and push the changes as done above, and update the tag in your App Service container configuration.
+
+## Configuring a custom domain name
+
+While the `*.azurewebsites.net` URL is cool for testing, at some point, you'll likely want to add a custom domain name to your web app. Once you've already purchased your domain from a registrar, you simply need to add an `A` record to it, that points at your web app's external IP (which is actually a load balancer). You can retrieve this IP by running the following command:
+
+```shell
+az appservice web config hostname get-external-ip
+```
+
+In addition to add an `A` record, you also need to add a `TXT` record to your domain, that points at the `*.azurewebsites.net` domain we've been using thus far. These two records are what allows Azure to verify that you actually own the domain.
+
+Once those records are created, and you've waited a litte while for the DNS changes to propagate (~1 hour), register the custom domain with Azure,so that it knows to expect the incoming traffic correctly. You can do this by simply running the following command:
+
+```shell
+az appservice web config hostname add -n <DOMAIN> --webapp-name node-todo-web
+```
+
+> Note: If the DNS changes haven't propagated yet, the above command will fail. Simply wait a little while and re-run it later.
+
+Now, once you navigate to your custom domain in a browser, you'll notice that it resolves to your deployed app on Azure!
 
 ## Clean-up
 
