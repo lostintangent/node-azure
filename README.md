@@ -15,7 +15,7 @@ The demo makes use of a simple todo app created by and published by [Scotch.io](
 * [Full Stack Debugging](#full-stack-debugging)
 * [Dockerizing Your App](#dockerizing-your-app)
 * [Deploying Your App](#deploying-your-app)
-* [Using DocumentDB](#using-documentdb)
+* [Provisioning a Fully-Managed MongoDB Server](#provisioning-a-fully-managed-mongoDB-server)
 * [Hosting a Private Docker Registry](#hosting-a-private-docker-registry)
 * [Configuring a custom domain name](#configuring-a-custom-domain-name)
 * [Clean-up](#clean-up)
@@ -362,7 +362,7 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 
 Yay! We just deployed our app. However, the spinning icon indicates that the app can't connect to the database, which makes sense because we were using a local instance of MongoDB during development, which obviously isn't reachable from within the Azure datacenters. Fortunately, since we updated the app to accept the connection string via an environment variable, we just need to spin up a MongoDB server and re-configure the App Service instance to reference it.
 
-## Using DocumentDB
+## Provisioning a Fully-Managed MongoDB Server
 
 While we could setup a MongoDB server, or replica set, and manage that infrastructure ourselves, Azure provides another solution called [DocumentDB](https://azure.microsoft.com/en-us/services/documentdb/). DocumentDB is a fully-managed, geo-replicable, high-performance, NoSQL database, which provides a MongoDB-compatibility layer. This means that you can point an existing MEAN app at it (or any MongoDB client/tool such as [Studio 3T](https://studio3t.com/)), without needing to change anything but the connection string! Let's take a look at how this works:
 
@@ -404,7 +404,7 @@ az acr create -n $ACR_NAME -l westus --admin-enabled
 
 > The "admin account" isn't the recommended authentication solution for production registries, however, for the sake of experimentation and simplicity, we're going with that. The output of creating your ACR instance will actually instruct you on how to create a "service principal" in Azure Active Directory, so feel free to go off the happy path using that guidance.
 
-After running this, it will display the login server URL (via the `LOGIN SERVER` column) which you'll use to login to it using the Docker CLI (e.g. `ninademo-microsoft.azurecr.io`). Additionally, it generated admin credentials that you can use in order to authenticate against it. To retrieve these credentials, run the following command and grab the displayed username and password:
+After running this, it will display the login server URL (via the `LOGIN SERVER` column) which you'll use to login to it using the Docker CLI (e.g. `ninademo.azurecr.io`). Additionally, it generated admin credentials that you can use in order to authenticate against it. To retrieve these credentials, run the following command and grab the displayed username and password:
 
 ```shell
 az acr credential show -n $ACR_NAME
