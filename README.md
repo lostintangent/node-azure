@@ -15,7 +15,7 @@ The demo makes use of a simple todo app created by and published by [Scotch.io](
 * [Full Stack Debugging](#full-stack-debugging)
 * [Dockerizing Your App](#dockerizing-your-app)
 * [Deploying Your App](#deploying-your-app)
-* [Provisioning a Fully-Managed MongoDB Server](#provisioning-a-fully-managed-mongoDB-server)
+* [Provisioning a MongoDB Server](#provisioning-a-mongodb-server)
 * [Hosting a Private Docker Registry](#hosting-a-private-docker-registry)
 * [Configuring a custom domain name](#configuring-a-custom-domain-name)
 * [Clean-up](#clean-up)
@@ -362,7 +362,7 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 
 Yay! We just deployed our app. However, the spinning icon indicates that the app can't connect to the database, which makes sense because we were using a local instance of MongoDB during development, which obviously isn't reachable from within the Azure datacenters. Fortunately, since we updated the app to accept the connection string via an environment variable, we just need to spin up a MongoDB server and re-configure the App Service instance to reference it.
 
-## Provisioning a Fully-Managed MongoDB Server
+## Provisioning a MongoDB Server
 
 While we could setup a MongoDB server, or replica set, and manage that infrastructure ourselves, Azure provides another solution called [DocumentDB](https://azure.microsoft.com/en-us/services/documentdb/). DocumentDB is a fully-managed, geo-replicable, high-performance, NoSQL database, which provides a MongoDB-compatibility layer. This means that you can point an existing MEAN app at it (or any MongoDB client/tool such as [Studio 3T](https://studio3t.com/)), without needing to change anything but the connection string! Let's take a look at how this works:
 
