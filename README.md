@@ -457,7 +457,7 @@ In addition to add an `A` record, you also need to add a `TXT` record to your do
 Once those records are created, and you've waited a litte while for the DNS changes to propagate (~1 hour), register the custom domain with Azure,so that it knows to expect the incoming traffic correctly. You can do this by simply running the following command:
 
 ```shell
-az appservice web config hostname add -n <DOMAIN> --webapp-name node-todo-web
+az appservice web config hostname add --hostname <DOMAIN>
 ```
 
 > Note: If the DNS changes haven't propagated yet, the above command will fail. Simply wait a little while and re-run it later.
