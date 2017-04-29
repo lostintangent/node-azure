@@ -18,6 +18,7 @@ The demo makes use of a simple todo app created by and published by [Scotch.io](
 * [Provisioning a MongoDB Server](#provisioning-a-mongodb-server)
 * [Hosting a Private Docker Registry](#hosting-a-private-docker-registry)
 * [Configuring a custom domain name](#configuring-a-custom-domain-name)
+* [Scaling up and out](#scaling-up-and-out)
 * [Clean-up](#clean-up)
 * [Conclusion](#conclusion)
 
@@ -463,6 +464,28 @@ az appservice web config hostname add --hostname <DOMAIN>
 > Note: If the DNS changes haven't propagated yet, the above command will fail. Simply wait a little while and re-run it later.
 
 Now, once you navigate to your custom domain in a browser, you'll notice that it resolves to your deployed app on Azure!
+
+## Scaling up and out
+
+At some point, your web app may become popular enough that its allocated resources (CPU and RAM) aren't sufficient for handling the increase in traffic/operational demands. The App Service Plan that we created above (`B1`) comes with 1 CPU core and 1.75 GB of RAM, which as you can imagine, can get maxed out fairly quickly. The `B2` plan comes with twice as much RAM and CPU, so if you notice that your app is beginning to run out of either, you could "scale up" the underlying VM by running the following command:
+
+```shell
+az appservice plan update -n nina-demo-plan --sku B2
+```
+
+> Note: Check out [this page](nina-demo-plan) to view the pricing details and specs of each App Service Plan SKU.
+
+After just a few moments, your web app will be migrated to the requested hardware, and can begin taking advantage of the associated resources. In addition to scaling up, you can also scale down by running the same command as above, but specifying a `--sku` that provides less resources, at a lower price. This way, you can ensure that your app has exactly what it needs. Nothing more and nothing less (depending on how much "buffer" you want to allocate).
+
+In addition to scaling the VM specs up, as long as your web app is stateless, you also have the option to "scale out", by adding more underlying VM instances. The App Service Plan that we created above only included a single VM (a "worker"), and therefore, all incoming traffic is ultimately bound by the limits of the available resources of that one instance. If we wanted to add a second VM instance, we could run the same command as above, but instead of scaling up the SKU, we can scale out the number of worker VMs:
+
+```shell
+az appservice plan update -n nina-demo-plan --number-of-workers 2
+```
+
+When you scale a web app out like this, incoming traffic will be transparently load balanced between all instances, which allows you to immediately increase your capacity, without having to make any code changes, or worry about the needed infrastructure. This scaling simplicity is why stateless web apps are considered a best practice, since it makes the ability to scale them up, down, out, etc. entirely deterministic, since no single VM/app instance includes state that is neccessary in order to function. If you push all of your app's state (and associated complexity!) into PaaS database, and allow someone else to manage it for you (e.g. DocumentDB, managed Redis), you'll likely be much happier in the long run!
+
+> Note: While this tutorial only illustrates running a single web app as part of an App Service Plan, you can actually create and deploy multiple web apps into the same plan. This allows you to provision/pay for a single plan (which is ultimately a cluster of homogenous VMs, determine by the plan's SKU/worker count), and make the most use of them. 
 
 ## Clean-up
 
