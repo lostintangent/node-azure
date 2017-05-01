@@ -334,7 +334,7 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 4. Create the App Service web app, which represents the actual todo app that will be running within the plan and resource group we just created. You can roughly think of a web app as being synonymous with a process or container, and the plan as being the VM/container host that they're running on.
 
     ```shell
-    az appservice web create -n nina-demo-app -p nina-demo-plan
+    az webapp create -n nina-demo-app -p nina-demo-plan
     ``` 
 
 5. Set the newly created web app as the default web instance, so that you can continue to use the CLI without needing to explicitly specify it:
@@ -346,7 +346,7 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 6. Configure the web app to use our Docker image, making sure to set the `-c` flag to the name of your DockerHub account/image name:
 
     ```shell
-    az appservice web config container update -c lostintangent/node
+    az webapp config container update -c lostintangent/node
     ```
 
     > Note: If instead of using a custom container, you'd prefer to do Git deployment, check out the instructions for setting that up [here](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-nodejs#configure-to-use-nodejs).
@@ -354,7 +354,7 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 7. Launch the app to view the container that was just deployed, which will be available at an `*.azurewebsites.net` URL:
 
     ```shell
-    az appservice web browse
+    az webapp browse
     ```
 
     <img src="images/BrowseApp.png" width="300px" />
@@ -383,7 +383,7 @@ While we could setup a MongoDB server, or replica set, and manage that infrastru
 3. Update your web app's `MONGO_URL` environment variable, so that it connects to the newly provisioned DocumentDB instance, instead of attempting to connect to a locally running MongoDB server (which doesn't exist!):
 
     ```shell
-    az appservice web config appsettings update --settings MONGO_URL=$MONGO_URL
+    az webapp config appsettings update --settings MONGO_URL=$MONGO_URL
     ```
 
 4. Return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created DocumentDB instance, which is fully emulating a MongoDB database.
@@ -450,7 +450,7 @@ If you refresh the app in your browser, everything should look and work the same
 While the `*.azurewebsites.net` URL is cool for testing, at some point, you'll likely want to add a custom domain name to your web app. Once you've already purchased your domain from a registrar, you simply need to add an `A` record to it, that points at your web app's external IP (which is actually a load balancer). You can retrieve this IP by running the following command:
 
 ```shell
-az appservice web config hostname get-external-ip
+az webapp config hostname get-external-ip
 ```
 
 In addition to add an `A` record, you also need to add a `TXT` record to your domain, that points at the `*.azurewebsites.net` domain we've been using thus far. These two records are what allows Azure to verify that you actually own the domain.
@@ -458,7 +458,7 @@ In addition to add an `A` record, you also need to add a `TXT` record to your do
 Once those records are created, and you've waited a litte while for the DNS changes to propagate (~1 hour), register the custom domain with Azure,so that it knows to expect the incoming traffic correctly. You can do this by simply running the following command:
 
 ```shell
-az appservice web config hostname add --hostname <DOMAIN>
+az webapp config hostname add --hostname <DOMAIN>
 ```
 
 > Note: If the DNS changes haven't propagated yet, the above command will fail. Simply wait a little while and re-run it later.
