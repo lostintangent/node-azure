@@ -6,19 +6,19 @@ The tutorial makes use of a simple todo app created by and published by [Scotch.
 
 * [Pre-requisites](#pre-requisites)
 * [Project Setup](#project-setup)
-* [Integrated Terminal](#integrated-terminal)
-* [Integrated Git version control](#integrated-git-version-control)
-* [Project / Code navigation](#project--code-navigation)
-* [Auto-completion](#auto-completion)
-* [Running The App](#running-the-app)
+   * [Integrated Terminal](#integrated-terminal)
+   * [Integrated Git version control](#integrated-git-version-control)
+   * [Project / Code navigation](#project--code-navigation)
+   * [Auto-completion](#auto-completion)
+   * [Running The App](#running-the-app)
 * [Integrated Debugging](#debugging)
-* [Full Stack Debugging](#full-stack-debugging)
+   * [Full Stack Debugging](#full-stack-debugging)
 * [Dockerizing Your App](#dockerizing-your-app)
 * [Deploying Your App](#deploying-your-app)
-* [Provisioning a MongoDB Server](#provisioning-a-mongodb-server)
-* [Hosting a Private Docker Registry](#hosting-a-private-docker-registry)
-* [Configuring a custom domain name](#configuring-a-custom-domain-name)
-* [Scaling up and out](#scaling-up-and-out)
+   * [Provisioning a MongoDB Server](#provisioning-a-mongodb-server)
+   * [Hosting a Private Docker Registry](#hosting-a-private-docker-registry)
+   * [Configuring a custom domain name](#configuring-a-custom-domain-name)
+   * [Scaling up and out](#scaling-up-and-out)
 * [Clean-up](#clean-up)
 * [Conclusion](#conclusion)
 
@@ -383,7 +383,7 @@ While we could setup a MongoDB server, or replica set, and manage that infrastru
 3. Update your web app's `MONGO_URL` environment variable, so that it connects to the newly provisioned DocumentDB instance, instead of attempting to connect to a locally running MongoDB server (which doesn't exist!):
 
     ```shell
-    az webapp config appsettings update --settings MONGO_URL=$MONGO_URL
+    az webapp config appsettings set --settings MONGO_URL=$MONGO_URL
     ```
 
 4. Return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created DocumentDB instance, which is fully emulating a MongoDB database.
@@ -434,7 +434,7 @@ docker push <LOGIN_SERVER>/lostintangent/node
 Your container is now stored in your own private registry, and the Docker CLI was happy to allow you to continue working in the same way as you did when using DockerHub. In order to instruct the App Service web app to pull from your private registry, you simply need to run the following command:
 
 ```shell
-az appservice web config container update \
+az appservice web config container set \
     -r <LOGIN_SERVER> \
     -c <LOGIN_SERVER>/lostintangent/node \
     -u <USERNAME> \
