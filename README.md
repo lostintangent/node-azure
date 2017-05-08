@@ -1,8 +1,8 @@
 # Node.js Development with Visual Studio Code and Azure
 
-Between Visual Studio Code and Azure, we're trying to contribute to simplifying and improving the overall developer experience of building, debugging and deploying Node.js applications. At [Node Interactive North America 2016](https://azure.microsoft.com/en-us/blog/end-to-end-cloud-experiences-for-developers-at-node-js-interactive-north-america/), I was excited to be able to demo some of the work we've been doing recently based on community feedback, and this article tries to capture that workflow for folks who are interested in trying it out and/or are looking for a little more detail than I was able to cover in my talk.
+Between Visual Studio Code and Azure, we're trying to simplify the overall developer experience of building, debugging and deploying Node.js applications. This tutorial tries to illustrate what it would look like to take an existing Node.js app, "containerize" it, and then deploy it to the cloud.
 
-The demo makes use of a simple todo app created by and published by [Scotch.io](https://scotch.io/tutorials/creating-a-single-page-todo-app-with-node-and-angular). It is a single-page MEAN app, and therefore, uses MongoDB as its database, Node/Express for the REST API/web server and Angular.js 1.x for the front-end UI. Use the following ToC to jump to particular sections of interest, otherwise, continue reading ahead.
+The tutorial makes use of a simple todo app created by and published by [Scotch.io](https://scotch.io/tutorials/creating-a-single-page-todo-app-with-node-and-angular). It is a single-page MEAN app, and therefore, uses MongoDB as its database, Node/Express for the REST API/web server and Angular.js 1.x for the front-end UI. Use the following ToC to jump to particular sections of interest, otherwise, continue reading ahead.
 
 * [Pre-requisites](#pre-requisites)
 * [Project Setup](#project-setup)
