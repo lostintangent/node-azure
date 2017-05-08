@@ -346,7 +346,7 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 6. Configure the web app to use our Docker image, making sure to set the `-c` flag to the name of your DockerHub account/image name:
 
     ```shell
-    az webapp config container update -c lostintangent/node
+    az webapp config container set -c lostintangent/node
     ```
 
     > Note: If instead of using a custom container, you'd prefer to do Git deployment, check out the instructions for setting that up [here](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-nodejs#configure-to-use-nodejs).
