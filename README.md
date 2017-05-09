@@ -365,34 +365,34 @@ Yay! We just deployed our app. However, the spinning icon indicates that the app
 
 ## Provisioning a MongoDB Server
 
-While we could setup a MongoDB server, or replica set, and manage that infrastructure ourselves, Azure provides another solution called [DocumentDB](https://azure.microsoft.com/en-us/services/documentdb/). DocumentDB is a fully-managed, geo-replicable, high-performance, NoSQL database, which provides a MongoDB-compatibility layer. This means that you can point an existing MEAN app at it (or any MongoDB client/tool such as [Studio 3T](https://studio3t.com/)), without needing to change anything but the connection string! Let's take a look at how this works:
+While we could setup a MongoDB server, or replica set, and manage that infrastructure ourselves, Azure provides another solution called [Cosmos DB](https://azure.microsoft.com/en-us/services/documentdb/). Cosmos DB is a fully-managed, geo-replicable, high-performance, NoSQL database, which provides a MongoDB-compatibility layer. This means that you can point an existing MEAN app at it (or any MongoDB client/tool such as [Studio 3T](https://studio3t.com/)), without needing to change anything but the connection string! Let's take a look at how this works:
 
-1. Head back to your terminal, and run the following command in order to create a MongoDB-compatible instance of the DocumentDB service. Feel free to name the instance whatever you'd like, by taking note to replace the `<NAME>` placeholder below with a globally unique value (DocumentDB uses this name to generate the database's server URL):
+1. Head back to your terminal, and run the following command in order to create a MongoDB-compatible instance of the Cosmos DB service. Feel free to name the instance whatever you'd like, by taking note to replace the `<NAME>` placeholder below with a globally unique value (Cosmos DB uses this name to generate the database's server URL):
 
    ```shell
-   DOCDB_NAME=<NAME>
-   az documentdb create -n $DOCDB_NAME --kind MongoDB
+   COSMOSDB_NAME=<NAME>
+   az cosmosdb create -n $DOCDB_NAME --kind MongoDB
    ```
 
 2. Retrieve the MongoDB connection string for this instance by running the following command:
 
    ```shell
-   MONGO_URL=(az documentdb list-connection-strings -n $DOCDB_NAME -otsv --query "connectionStrings[0].connectionString")
+   MONGO_URL=(az cosmosdb list-connection-strings -n $DOCDB_NAME -otsv --query "connectionStrings[0].connectionString")
    ```
 
-3. Update your web app's `MONGO_URL` environment variable, so that it connects to the newly provisioned DocumentDB instance, instead of attempting to connect to a locally running MongoDB server (which doesn't exist!):
+3. Update your web app's `MONGO_URL` environment variable, so that it connects to the newly provisioned Cosmos DB instance, instead of attempting to connect to a locally running MongoDB server (which doesn't exist!):
 
     ```shell
     az webapp config appsettings set --settings MONGO_URL=$MONGO_URL
     ```
 
-4. Return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created DocumentDB instance, which is fully emulating a MongoDB database.
+4. Return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created Cosmos DB instance, which is fully emulating a MongoDB database.
 
     <img src="images/FinishedDemo.png" width="450px" />
 
-When needed, we could switch back to the DocumentDB instance, and scale up (or down) the reserved throughput that our MongoDB instance needs, and benefit from the added traffic without needing to manage any infrastructure manually.
+When needed, we could switch back to the Cosmos DB instance, and scale up (or down) the reserved throughput that our MongoDB instance needs, and benefit from the added traffic without needing to manage any infrastructure manually.
 
-Additionally, DocumentDB automatically indexes every single document and property for you, so you don't need to worry about  profiling slow queries and/or manually fine-tuning your indexes. Just provision and scale as needed, and let DocumentDB handle the rest!
+Additionally, Cosmos DB automatically indexes every single document and property for you, so you don't need to worry about  profiling slow queries and/or manually fine-tuning your indexes. Just provision and scale as needed, and let Cosmos DB handle the rest!
 
 ## Hosting a Private Docker Registry
 
@@ -483,7 +483,7 @@ In addition to scaling the VM specs up, as long as your web app is stateless, yo
 az appservice plan update -n nina-demo-plan --number-of-workers 2
 ```
 
-When you scale a web app out like this, incoming traffic will be transparently load balanced between all instances, which allows you to immediately increase your capacity, without having to make any code changes, or worry about the needed infrastructure. This scaling simplicity is why stateless web apps are considered a best practice, since it makes the ability to scale them up, down, out, etc. entirely deterministic, since no single VM/app instance includes state that is neccessary in order to function. If you push all of your app's state (and associated complexity!) into PaaS database, and allow someone else to manage it for you (e.g. DocumentDB, managed Redis), you'll likely be much happier in the long run!
+When you scale a web app out like this, incoming traffic will be transparently load balanced between all instances, which allows you to immediately increase your capacity, without having to make any code changes, or worry about the needed infrastructure. This scaling simplicity is why stateless web apps are considered a best practice, since it makes the ability to scale them up, down, out, etc. entirely deterministic, since no single VM/app instance includes state that is neccessary in order to function. If you push all of your app's state (and associated complexity!) into PaaS database, and allow someone else to manage it for you (e.g. Cosmos DB, managed Redis), you'll likely be much happier in the long run!
 
 > Note: While this tutorial only illustrates running a single web app as part of an App Service Plan, you can actually create and deploy multiple web apps into the same plan. This allows you to provision/pay for a single plan (which is ultimately a cluster of homogenous VMs, determine by the plan's SKU/worker count), and make the most use of them. 
 
@@ -501,6 +501,6 @@ This will take a few minutes to complete, but when done, will leave your Azure a
 
 Hopefully this demo illustrated some of the ways that Visual Studio Code and Azure are trying to help improve the overall Node.js development experience. Between debugging that supports full-stack and microservices, a rich authoring experience that provides navigation and auto-completion without any further configuration, and a large ecosystem of extensions such as Docker, that can enhance your feedback loop for other app types and practices, we're excited to keep evolving what productivity can look like from within a lightweight editor.
 
-Additionally, between the Azure CLI, App Service and DocumentDB, we're trying to provide a productive and low-management cloud stack for Node.js/MEAN apps that can scale as needed, without introducing additional infrastructure complexity.
+Additionally, between the Azure CLI, App Service and Cosmos DB, we're trying to provide a productive and low-management cloud stack for Node.js/MEAN apps that can scale as needed, without introducing additional infrastructure complexity.
 
 Additionally, we hope to use this demo to continue iterating on the overall Node.js experience in both VS Code and Azure, so we can make it simpler and more flexible. If you have any questions or feedback for how we can improve things, please don't hesitate to file an issue on this repo or send me an [e-mail](mailto:joncart@microsoft.com). Thanks!
