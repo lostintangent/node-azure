@@ -45,6 +45,8 @@ In order to ensure you can spend the entire trial period dedicated to Linux Web 
     # View details about the "config" group and its child commands
     az webapp config -h
     ```
+    
+5. Optionally, you can follow along with any of the Linux Web App "quick starts" to get some ideas of things to try next: [Node.js](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-nodejs) or [PHP](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-php).
 
 Whenever you're done, or the Try App Service instance expires (after 30 minutes), you can run the following commands in order to reset your CLI environment:
 
