@@ -24,8 +24,8 @@ In order to ensure you can spend the entire trial period dedicated to Linux Web 
 
     ```shell
     az account set -s "$(az account list --all --query "[?starts_with(@.name, 'TryLinux')].name" -otsv)" && \
-       az configure -d group=$(az group list --query "[].name" -otsv) \ 
-                       web=$(az webapp list --query "[].name" -otsv)
+        az configure -d group=$(az group list --query "[].name" -otsv) \
+                        web=$(az webapp list --query "[].name" -otsv)
     ```
 
 3. Launch your newly deployed web app to ensure that everything is setup correctly:
