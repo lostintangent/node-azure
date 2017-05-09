@@ -31,16 +31,18 @@ In order to ensure you can spend the entire trial period dedicated to Linux Web 
 3. Launch your newly deployed web app to ensure that everything is setup correctly:
 
     ```shell
+    # Notice that you don't need to specify the app name,
+    # since all context has already been set above
     az webapp browse
     ```
 
-4. That's it! You can now explore the various commands you can run to manage your web app (e.g. setting env vars, restarting, deploying a Docker container). Just add `-h` after a command group (e.g. `az webapp config`) or command (e.g. `az webapp restart`) in order to get more details about it.
+4. That's it! You can now explore the various commands available to manage your web app (e.g. setting env vars, restarting, deploying a Docker container). Just add `-h` after a command group (e.g. `az webapp config`) or command (e.g. `az webapp restart`) in order to get more details about it.
 
     ```shell
-    # View details about all web commands and groups
+    # View details about all web commands and sub-groups
     az webapp -h
 
-    # View details about the "config" group
+    # View details about the "config" group and its child commands
     az webapp config -h
     ```
 
