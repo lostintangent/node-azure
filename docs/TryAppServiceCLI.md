@@ -23,9 +23,8 @@ In order to ensure you can spend the entire trial period dedicated to Linux Web 
 2. Return to your terminal, and run the following command in order to configure your environment to default to the web app that was created by `Try App Service`. This ensures that all subsequent CLI commands are appropriately scoped, and will make it much simpler for you to experiment with the CLI:
 
     ```shell
-    az account set --subscription "TryLinux 4" && \
-        az configure --defaults group=$(az group list --query "[].name" -otsv) \
-                                web=$(az webapp list --query "[].name" -otsv)
+    az account set -s $(az account list --query "[?starts_with(@.name, 'TryLinux')].name" -otsv) && \
+        az configure -d group=$(az group list --query "[].name" -otsv) web=$(az webapp list --query "[].name" -otsv)
     ```
 
 3. Launch your newly deployed web app to ensure that everything is setup correctly:
