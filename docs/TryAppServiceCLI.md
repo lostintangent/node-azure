@@ -20,11 +20,13 @@ In order to ensure you can spend the entire trial period dedicated to Linux Web 
 
 1. Launch a browser and navigate to [Try App Service](tryappservice.azure.com), select the `Linux Web App` app type, and then create a trial app using whichever template you'd prefer (e.g. Node.js). Remember to login with the same Microsoft account you used when logging in with the Azure CLI.
 
-2. Return to your terminal, and run the following command in order to configure your environment to default to the web app that was created by `Try App Service`. This ensures that all subsequent CLI commands are appropriately scoped, and will make it much simpler for you to experiment with the CLI:
+2. Return to your terminal, and run the following commands in order to configure your environment to default to the web app that was created by `Try App Service`. This ensures that all subsequent CLI commands are appropriately scoped, and will make it much simpler for you to experiment with the CLI:
 
     ```shell
-    az account set -s $(az account list --query "[?starts_with(@.name, 'TryLinux')].name" -otsv) && \
-        az configure -d group=$(az group list --query "[].name" -otsv) web=$(az webapp list --query "[].name" -otsv)
+    az account set -s $(az account list --query "[?starts_with(@.name, 'TryLinux')].name" -otsv)
+    
+    az configure -d group=$(az group list --query "[].name" -otsv) \
+                    web=$(az webapp list --query "[].name" -otsv)
     ```
 
 3. Launch your newly deployed web app to ensure that everything is setup correctly:
