@@ -113,7 +113,7 @@ mongoose.connect(database.localUrl);
 To this:
 
 ```javascript
-mongoose.connect(process.env.MONGO_URL || database.localUrl);
+mongoose.connect(process.env.MONGODB_URL || database.localUrl);
 ```
 
 When typing `process.`, you should have noticed that VS Code displayed the available members of the Node.js `process` global API, without you needing to configure anything.
@@ -365,19 +365,19 @@ While we could setup a MongoDB server, or replica set, and manage that infrastru
 
    ```shell
    COSMOSDB_NAME=<NAME>
-   az cosmosdb create -n $DOCDB_NAME --kind MongoDB
+   az cosmosdb create -n $COSMOSDB_NAME --kind MongoDB
    ```
 
 2. Retrieve the MongoDB connection string for this instance by running the following command:
 
    ```shell
-   MONGO_URL=(az cosmosdb list-connection-strings -n $DOCDB_NAME -otsv --query "connectionStrings[0].connectionString")
+   MONGODB_URL=$(az cosmosdb list-connection-strings -n $COSMOSDB_NAME -otsv --query "connectionStrings[0].connectionString")
    ```
 
-3. Update your web app's `MONGO_URL` environment variable, so that it connects to the newly provisioned Cosmos DB instance, instead of attempting to connect to a locally running MongoDB server (which doesn't exist!):
+3. Update your web app's `MONGODB_URL` environment variable, so that it connects to the newly provisioned Cosmos DB instance, instead of attempting to connect to a locally running MongoDB server (which doesn't exist!):
 
     ```shell
-    az webapp config appsettings set --settings MONGO_URL=$MONGO_URL
+    az webapp config appsettings set --settings MONGODB_URL=$MONGODB_URL
     ```
 
 4. Return to your browser and refresh it. Try adding and removing a todo item, to prove that the app now works without needing to change anything! We simply set the environment variable to our created Cosmos DB instance, which is fully emulating a MongoDB database.
