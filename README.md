@@ -331,11 +331,13 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
 
     > Note: The --is-linux flag is key, since that is what indicates that you want Linux-based VMs. Without it, the CLI will provision Windows-based VMs.
 
-4. Create the App Service web app, which represents the actual todo app that will be running within the plan and resource group we just created. You can roughly think of a web app as being synonymous with a process or container, and the plan as being the VM/container host that they're running on.
+4. Create the App Service web app, which represents the actual todo app that will be running within the plan and resource group we just created. You can roughly think of a web app as being synonymous with a process or container, and the plan as being the VM/container host that they're running on. Additionally, as part of creating the web app, we'll configure it to use the Docker image that we just published to DockerHub:
 
     ```shell
-    az webapp create -n nina-demo-app -p nina-demo-plan
+    az webapp create -n nina-demo-app -p nina-demo-plan -i lostintangent/node
     ``` 
+    
+    > Note: If instead of using a custom container, you'd prefer to do Git deployment, check out the instructions for setting that up [here](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-nodejs#configure-to-use-nodejs).
 
 5. Set the newly created web app as the default web instance, so that you can continue to use the CLI without needing to explicitly specify it:
 
@@ -343,15 +345,7 @@ To get started, open up your terminal, and we'll use the new Azure CLI 2.0 to ma
     az configure -d web=nina-demo-app
     ```
 
-6. Configure the web app to use our Docker image, making sure to set the `-c` flag to the name of your DockerHub account/image name:
-
-    ```shell
-    az webapp config container set -c lostintangent/node
-    ```
-
-    > Note: If instead of using a custom container, you'd prefer to do Git deployment, check out the instructions for setting that up [here](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-nodejs#configure-to-use-nodejs).
-
-7. Launch the app to view the container that was just deployed, which will be available at an `*.azurewebsites.net` URL:
+6. Launch the app to view the container that was just deployed, which will be available at an `*.azurewebsites.net` URL:
 
     ```shell
     az webapp browse
