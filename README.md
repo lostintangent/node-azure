@@ -394,7 +394,7 @@ DockerHub provides an amazing experience for distributing your container images,
 
 ```shell
 ACR_NAME=<NAME>
-az acr create -n $ACR_NAME -l westus --admin-enabled
+az acr create -n $ACR_NAME --admin-enabled
 ```
 
 > The "admin account" isn't the recommended authentication solution for production registries, however, for the sake of experimentation and simplicity, we're going with that. The output of creating your ACR instance will actually instruct you on how to create a "service principal" in Azure Active Directory, so feel free to go off the happy path using that guidance.
